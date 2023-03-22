@@ -1,37 +1,78 @@
 #include <servo.h>
 
-Servo servo1;
-Servo servo2;
-Servo servo3;
-Servo servo4;
-Servo servo5;
+Servo south;
+Servo east;
+Servo west;
+Servo north;
+Servo centre;
+Servo extraSouth;
 
 void setup()
 {
     Serial.begin(9600);//Set Baud Rate to 9600 bps
-    servo1.attach(9);
-}
-void loop()
-{
-    uint16_t val;
-    double dat;
-    val=analogRead(A0);//Connect Analog pin to A0
-    dat = (double) val * 0.47-33.4;
-    std::cout << "Position: " << dat << "degrees" << std::endl;
-    double pos = dat;
-    delay(100);
+    south.attach(9);
+    east.attach(10);
+    west.attach(11);
+    north.attach(12);
+    centre.attach(13);
+    extraSouth.attach(8);
+
 }
 
-void control_motor()
+void actuate(Servo servo, double pos)
 {
-    while (True) {
-        int inPos = 0;
-        std::cout << "Enter position: ";
-        std::cin >> inPos;
-        inP = map(inPos, 500, 1500, 0, 270);
-        servo1.write(pos);
-        delay(15);
-        servo1.write(0);
-        delay(15);
+    servo.write(pos);
+    delay(750);
+    servo.write(0);
+}
+
+void shirt_short()
+{
+    actuate(extraSouth, 110);
+    actuate(south, 110);
+    actuate(east, 110);
+    actuate(west, 110);
+    actuate(centre, 110);
+    actuate(north, 150);
+}
+
+void shirt_long()
+{
+    actuate(extraSouth, 110);
+    actuate(south, 110);
+    actuate(east, 110);
+    actuate(west, 110);
+    actuate(east, 110);
+    actuate(west, 110);
+    actuate(centre, 110);
+    actuate(north, 150);
+}
+
+void trousers()
+{
+    actuate(centre, 110);
+    actuate(east, 110);
+    actuate(west, 110);
+    actuate(north, 150);
+}
+
+void loop()
+{
+    if (Serial.available() > 0)
+    {
+        char usb = Serial.read();
+        if (usb == '1')
+        {
+            shirt_short();
+        }
+        else if (usb == '2')
+        {
+            shirt_long();
+        }
+        else if (usb == '3')
+        {
+            trousers();
+        }
     }
 }
+
