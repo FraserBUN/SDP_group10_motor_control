@@ -1,11 +1,57 @@
 #include <servo.h>
 
-Servo south;
-Servo east;
-Servo west;
-Servo north;
-Servo centre;
-Servo extraSouth;
+class ServoWrapper
+{
+    public:
+        void attach(int pin)
+        {
+            servo.attach(pin);
+        }
+
+        ServoWrapper(Servo servo, double pos)
+        {
+            this->servo = servo;
+            this->pos = pos;
+        }
+
+
+        void lift()
+        {
+            servo.write(pos);
+            delay(750);
+        }
+
+        void lower()
+        {
+            servo.write(0);
+            delay(750);
+        }
+
+        void actuate()
+        {
+            lift();
+            lower();
+        }
+
+    private:
+        Servo servo;
+        double pos;
+};
+
+Servo southKernel;
+Servo eastKernel;
+Servo westKernel;
+Servo northKernel;
+Servo centreKernel;
+Servo extraSouthKernel;
+
+ServoWrapper south(southKernel, 110);
+ServoWrapper east(eastKernel, 110);
+ServoWrapper west(westKernel, 110);
+ServoWrapper north(northKernel, 150);
+ServoWrapper centre(centreKernel, 110);
+ServoWrapper extraSouth(extraSouthKernel, 110);
+
 
 void setup()
 {
@@ -16,10 +62,9 @@ void setup()
     north.attach(12);
     centre.attach(13);
     extraSouth.attach(8);
-
 }
 
-void actuate(Servo servo, double pos)
+void actuate(Servo servo)
 {
     servo.write(pos);
     delay(750);
@@ -28,39 +73,40 @@ void actuate(Servo servo, double pos)
 
 void shirt_short()
 {
-    actuate(extraSouth, 110);
-    actuate(south, 110);
-    actuate(east, 110);
-    actuate(west, 110);
-    actuate(centre, 110);
-    actuate(north, 150);
+    extraSouth.actuate();
+    south.actuate();
+    east.actuate();
+    west.actuate();
+    centre.actuate();
+    north.actuate();
 }
 
 void shirt_long()
 {
-    actuate(extraSouth, 110);
-    actuate(south, 110);
-    actuate(east, 110);
-    actuate(west, 110);
-    actuate(east, 110);
-    actuate(west, 110);
-    actuate(centre, 110);
-    actuate(north, 150);
+    extraSouth.actuate();
+    south.actuate();
+    east.actuate();
+    west.actuate();
+    east.actuate();
+    west.actuate();
+    centre.actuate();
+    north.actuate();
 }
 
 void trousers()
 {
-    actuate(centre, 110);
-    actuate(east, 110);
-    actuate(west, 110);
-    actuate(north, 150);
+    south.actuate();
+    east.actuate();
+    west.actuate();
+    centre.actuate();
+    north.actuate();
 }
 
 void loop()
 {
     if (Serial.available() > 0)
     {
-        char usb = Serial.read();
+        string usb = Serial.read();
         if (usb == '1')
         {
             shirt_short();
@@ -69,8 +115,7 @@ void loop()
         {
             shirt_long();
         }
-        else if (usb == '3')
-        {
+        else if (usb == '3') {
             trousers();
         }
     }
