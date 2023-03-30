@@ -1,5 +1,8 @@
 #include <Servo.h>
 
+int up_time = 400;
+int down_time = 500;
+
 Servo south;
 Servo east;
 Servo west;
@@ -18,57 +21,43 @@ void setup()
 
 }
 
-void actuate(Servo servo, double pos)
+void up(Servo servo)
 {
-    servo.write(0);
-    delay(750);
-    servo.write(pos);
+  servo.write(0);
 }
 
-void shirt_short()
+void down (Servo servo)
 {
-    actuate(south, 100);
-    actuate(east, 100);
-    actuate(west, 100);
-    actuate(centre, 100);
-    actuate(north, 150);
-}
-
-void shirt_long()
-{
-    actuate(south, 100);
-    actuate(east, 100);
-    actuate(west, 100);
-    actuate(east, 100);
-    actuate(west, 100);
-    actuate(centre, 100);
-    actuate(north, 150);
-}
-
-void trousers()
-{
-    actuate(centre, 100);
-    actuate(east, 100);
-    actuate(west, 100);
-    actuate(north, 150);
+  servo.write(75);  
 }
 
 void loop()
 {
-    if (Serial.available() > 0)
+  down(south);
+  down(centre);
+  down(west);
+  down(east);
+      if (Serial.available() > 0)
     {
         char usb = Serial.read();
         if (usb == '1')
         {
-            shirt_short();
-        }
-        else if (usb == '2')
-        {
-            shirt_long();
-        }
-        else if (usb == '3')
-        {
-            trousers();
+  up(south);
+  delay(up_time);
+  down(south);
+  delay(down_time);
+  up(west);
+  delay(up_time);
+  down(west);
+  delay(down_time);
+  up(east);
+  delay(up_time);
+  down(east);
+  delay(down_time);
+  up(centre);
+  delay(up_time);
+  down(centre);
+  delay(down_time);
         }
     }
 }
