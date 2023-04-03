@@ -1,14 +1,13 @@
-#include <Servo.h>
 
-int up_time = 400;
-int down_time = 500;
+#include <Servo.h>
 
 Servo south;
 Servo east;
 Servo west;
 Servo north;
 Servo centre;
-Servo extraSouth;
+int up_time = 400;
+int down_time = 500;
 
 void setup()
 {
@@ -16,10 +15,11 @@ void setup()
     south.attach(3);
     east.attach(5);
     west.attach(6);
-    north.attach(9);
-    centre.attach(10);
+    north.attach(10);
+    centre.attach(9);
 
 }
+
 
 void up(Servo servo)
 {
@@ -30,6 +30,14 @@ void down (Servo servo)
 {
   servo.write(75);  
 }
+
+void north_up(){
+    north.write(80);
+  }
+
+void north_down(){
+    north.write(0);
+  }
 
 void loop()
 {
@@ -58,6 +66,11 @@ void loop()
   delay(up_time);
   down(centre);
   delay(down_time);
+  north_up();
+  delay(500);
+  north_down();
+  delay(750);
+  
         }
     }
 }
